@@ -1,10 +1,10 @@
 import PrescriptionService from "../services/PrescriptionService";
 
 const newPrescription = async (req : any, res: any) => {
-    const { consultationId, medication, dosage, frequency, duration } = req.body;
+    const { consultation_id, prescription_date, instructions } = req.body;
 
     try {
-        const newPrescription = PrescriptionService.savePrescription(consultationId, medication, dosage, frequency, duration);
+        const newPrescription = PrescriptionService.savePrescription(consultation_id, prescription_date, instructions);
         res.status(201).json({ message: 'Prescription created successfully!', prescription: newPrescription });
     } catch (error) {
         res.status(500).json({ error: 'Failed to create prescription.' });

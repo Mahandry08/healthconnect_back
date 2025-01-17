@@ -1,26 +1,62 @@
-import mongoose from "mongoose";
 import Prescription from "../models/Prescription";
 
 class PrescriptionService {
-    async savePrescription(consultationId: mongoose.Schema.Types.ObjectId, medication: string, dosage: string, frequency: string, duration: string){
-        if(medication != '' && dosage != '' && frequency != '' && duration != ''){
-            const newPrescription = new Prescription({consultationId, medication, dosage, frequency, duration});
-            return await newPrescription.save();
-        }else{
-            return "There is an empty input ! Please verify";
-        }   
+    async savePrescription(consultation_id: number, prescription_date: Date, instructions: string) {
+        if (instructions !== '') {
+            try {
+                const newPrescription = await Prescription.create({
+                    consultation_id,
+                    prescription_date,
+                    instructions
+                });
+                return newPrescription;
+            } catch (error: any) {
+                return `Error saving prescription: ${error.message}`;
+            }
+        } else {
+            return "There is an empty input! Please verify.";
+        }
     }
 
-    async searchByConsultId(ConsultationId: string) {
-        return await Prescription.findById(ConsultationId);
+    async searchByConsultId(consultation_id: string) {
+        try {
+            const prescription = await Prescription.findOne({
+                where: { consultation_id },
+            });
+            return prescription;
+        } catch (error: any) {
+            return `Error searching by consultation ID: ${error.message}`;
+        }
     }
 
-    async updatePrescription(id : any, data : any){
-        return await Prescription.findByIdAndUpdate(id, data, {new : true});
+    async updatePrescription(prescription_id: number, data: any) {
+        try {
+            const [updated] = await Prescription.update(data, {
+                where: { prescription_id },
+            });
+
+            if (updated) {
+                return await Prescription.findByPk(prescription_id);
+            }
+            return "Prescription not found!";
+        } catch (error: any) {
+            return `Error updating prescription: ${error.message}`;
+        }
     }
 
-    async deletePrescription(id: any){
-        return await Prescription.findByIdAndDelete(id);
+    async deletePrescription(prescription_id: number) {
+        try {
+            const deleted = await Prescription.destroy({
+                where: { prescription_id },
+            });
+
+            if (deleted) {
+                return "Prescription deleted successfully!";
+            }
+            return "Prescription not found!";
+        } catch (error: any) {
+            return `Error deleting prescription: ${error.message}`;
+        }
     }
 }
 
