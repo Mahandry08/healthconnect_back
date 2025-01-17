@@ -1,34 +1,51 @@
+import User from "../models/User";
 import UserService from "../services/UserService";
 
-const register = async (req : any, res: any) => {
-    const { name, email, password, role } = req.body;
+const register = async (req: any, res: any) => {
+    const { name, firstname, birthday, email, password, role, address, phone_number } = req.body;
+
+    if (![0, 1, 2].includes(role)) {
+        return res.status(400).json({ error: 'Invalid role. Role must be 0 (patient), 1 (médecin), or 2 (admin).' });
+    }
 
     try {
-        const newUser  = UserService.register(name, email, password, role);
-        res.status(201).json({ message: 'User  registered successfully!' });
-    } catch (error) {
-        res.status(500).json({ error: 'User  registration failed.' });
+        // Await the result of the registration method
+        const newUser = await UserService.register(name, firstname, birthday, email, password, role, address, phone_number);
+        res.status(201).json({ message: 'User registered successfully!', user: newUser });
+
+    } catch (error: any) {
+        console.error(error); // Log the error for debugging purposes
+        res.status(500).json({ error: error.message || 'User registration failed.' });
     }
 };
 
-/*const login = async (req : any, res : any) => {
+const login = async (req: any, res: any) => {
     const { email, password } = req.body;
 
     try {
-        const user = await User.findOne({ email });
-        if (!user) return res.status(404).json({ error: 'User  not found.' });
+        // Call the login method from UserService
+        const { message, user } = await UserService.login(email, password);
 
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return res.status(401).json({ error: 'Invalid credentials.' });
-
-        const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET || 'secret', { expiresIn: '1h' });
-        res.json({ token });
-    } catch (error) {
-        res.status(500).json({ error: 'Login failed.' });
+        // Return the user details (no session or token involved)
+        res.status(200).json({ message, user });
+    } catch (error: any) {
+        // Send a detailed error message in case of failure
+        res.status(401).json({ error: error.message || 'Login failed.' });
     }
-};*/
+};
+
+const users = async(req : any, res: any) =>{
+    try {
+        const users = await UserService.getAllUsers();
+        res.status(200).json(users);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error retrieving users', error });
+    }
+}
 
 export default{
     register,
-    //login
+    login,
+    users
 }

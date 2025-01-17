@@ -1,19 +1,24 @@
-import { Consultation } from "../models/Consultation";
+import { Op } from "sequelize";
+import Consultation  from "../models/Consultation";
 
 class ConsultationService {
-    async searchByUserID(userId: string) {
-        return await Consultation.find({
-            $or: [{ patientId: userId }, { doctorId: userId }],
+    // Search for consultations by userId (either patient or doctor)
+    /*async searchByUserID(userId: string) {
+        return await Consultation.findAll({
+            where: {
+                [Op.or]: [{ patientId: String(userId) }, { doctorId: String(userId) }],
+            },
         });
-    }
+    }*/
 
+    // Schedule a new consultation (save data into the DB)
     async scheduleConsultation(data: any) {
-        const newConsultation = new Consultation(data);
-        return await newConsultation.save();
+        return await Consultation.create(data);
     }
 
-    async searchConsultationByID(id: string) {
-        return await Consultation.findById(id);
+    // Search for a consultation by its ID
+    async searchConsultationByID(id: number) {
+        return await Consultation.findByPk(id);
     }
 }
 
