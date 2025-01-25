@@ -23,10 +23,15 @@ class UserService {
     }
 
     // Login user
-    async login(email: string, password: string) {
+    async login(identifier: string, password: string) {
         try {
-            // Find user by email
-            const user = await User.findOne({ where: { email } });
+            // Find user by email or by phone number
+
+            const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier);
+
+            const user = await User.findOne({
+                 where: isEmail ? { email: identifier } : {phone_number : identifier} 
+            });
 
             if (!user) {
                 throw new Error('User not found');
