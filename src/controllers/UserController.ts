@@ -20,19 +20,26 @@ const register = async (req: any, res: any) => {
 };
 
 const login = async (req: any, res: any) => {
-    const { email, password } = req.body;
+    const { identifier, password } = req.body; 
 
     try {
-        // Call the login method from UserService
-        const { message, user } = await UserService.login(email, password);
-
-        // Return the user details (no session or token involved)
-        res.status(200).json({ message, user });
+        
+        const { message, user } = await UserService.login(identifier, password);
+        
+        res.status(200).json({ 
+            success: true,
+            message,
+            user
+        });
     } catch (error: any) {
         // Send a detailed error message in case of failure
-        res.status(401).json({ error: error.message || 'Login failed.' });
+        res.status(401).json({
+            success: false, 
+            error: error.message || 'Login failed.' 
+        });
     }
 };
+
 
 const users = async(req : any, res: any) =>{
     try {
