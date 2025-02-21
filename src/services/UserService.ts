@@ -34,14 +34,14 @@ class UserService {
             });
 
             if (!user) {
-                throw new Error('User not found');
+                return {message: 'Email or phone invalid'};
             }
 
             // Compare provided password with stored password
             const isPasswordValid = await bcrypt.compare(password, user.password);
 
             if (!isPasswordValid) {
-                throw new Error('Invalid password');
+                return {message: 'Password invalid'};
             }
 
             // Return user details (but no session or token)

@@ -26,17 +26,21 @@ const login = async (req: any, res: any) => {
         
         const { message, user } = await UserService.login(identifier, password);
         
-        res.status(200).json({ 
-            success: true,
-            message,
-            user
-        });
+        if(user){
+            return res.status(200).json({ 
+                success: true,
+                message,
+                user
+            });
+        }else{
+            res.status(401).json({
+                success: false, 
+                message
+            });
+        }
+        
     } catch (error: any) {
-        // Send a detailed error message in case of failure
-        res.status(401).json({
-            success: false, 
-            error: error.message || 'Login failed.' 
-        });
+        throw error;
     }
 };
 
