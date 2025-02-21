@@ -4,7 +4,7 @@
   "main": "app.ts",
   "scripts": {
     "prod": "npx ts-node -T app.ts",
-    "dev": "nodemon --delay ./app.ts -- --host 0.0.0.0"
+    "dev": "npx ts-node -T app.ts"
   },
   "dependencies": {
     "abbrev": "^1.1.1",
