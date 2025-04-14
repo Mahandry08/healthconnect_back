@@ -9,6 +9,7 @@ interface IConsultation {
     consultation_date: Date;
     diagnostic: string;
     videocall_id: number | null;
+    status: number;
 }
 
 interface IConsultationCreationAttributes extends Optional<IConsultation, 'consultation_id' | 'videocall_id'> {}
@@ -20,6 +21,7 @@ class Consultation extends Model<IConsultation, IConsultationCreationAttributes>
     public consultation_date!: Date;
     public diagnostic!: string;
     public videocall_id!: number | null;
+    public status!: number; // 0 en attente, 1 terminé
 
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
@@ -52,7 +54,11 @@ Consultation.init(
             type: DataTypes.INTEGER,
             allowNull: true,
         },
-    },
+        status: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+        },
+    },        
     {
         sequelize,
         tableName: 'consultations',

@@ -1,8 +1,7 @@
-import User from "../models/User";
 import UserService from "../services/UserService";
 
 const register = async (req: any, res: any) => {
-    const { name, firstname, birthday, email, password, role, address, phone_number } = req.body;
+    const { name, firstname, birthday, email, password, role, address, phone_number, status } = req.body;
 
     if (![0, 1, 2].includes(role)) {
         return res.status(400).json({ error: 'Invalid role. Role must be 0 (patient), 1 (médecin), or 2 (admin).' });
@@ -10,7 +9,7 @@ const register = async (req: any, res: any) => {
 
     try {
         // Await the result of the registration method
-        const newUser = await UserService.register(name, firstname, birthday, email, password, role, address, phone_number);
+        const newUser = await UserService.register(name, firstname, birthday, email, password, role, address, phone_number, status);
         res.status(201).json({ message: 'User registered successfully!', user: newUser });
 
     } catch (error: any) {
@@ -55,8 +54,36 @@ const users = async(req : any, res: any) =>{
     }
 }
 
+const addMedicalprofile = async (req: any, res: any) => {
+    const { userId, medicalHistory, allergies} = req.body;
+
+    try {
+        // Await the result of the registration method
+        const newProfile= await UserService.createMedicalProfile(userId, medicalHistory, allergies);
+        res.status(201).json({ message: 'Medical profile updated successfully!', profile: newProfile });
+
+    } catch (error: any) {
+        console.error(error); 
+        res.status(500).json({ error: error.message || 'Medical Profile update failed.' });
+    }
+};
+
+const patientProfile = async(req : any, res: any) =>{
+    
+    const {userId} = req.body;
+    try {
+        const profile = await UserService.getPatientDetailsWithProfile(userId);
+        res.status(200).json(profile);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error retrieving users', error });
+    }
+}
+
 export default{
     register,
     login,
-    users
+    users,
+    addMedicalprofile,
+    patientProfile
 }

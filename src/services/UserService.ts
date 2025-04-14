@@ -1,9 +1,12 @@
+import { Op, QueryTypes } from 'sequelize';
+import { sequelize } from '../database/Database';
+import MedicalProfile from '../models/MedicalProfile';
 import User from '../models/User';
 import bcrypt from 'bcrypt';
 
 class UserService {
     // Register user
-    async register(name: string, firstname: string, birthday :Date, email: string, password: string, role: 0 | 1 | 2, address: string, phone_number: string) {
+    async register(name: string, firstname: string, birthday :Date, email: string, password: string, role: 0 | 1 | 2, address: string, phone_number: string, status: 0 | 1) {
         const hashedPassword = await bcrypt.hash(password, 10);
         try {
             const newUser = await User.create({
@@ -14,7 +17,8 @@ class UserService {
                 firstname,
                 birthday,
                 address,
-                phone_number
+                phone_number,
+                status
             });
             return newUser;
         } catch (error: any) {
@@ -30,7 +34,13 @@ class UserService {
             const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier);
 
             const user = await User.findOne({
-                 where: isEmail ? { email: identifier } : {phone_number : identifier} 
+                where: {
+                    [Op.and]: [
+                        isEmail ? { email: identifier } : { phone_number: identifier },
+                        { status: 1 } 
+                    ]
+                }
+                 
             });
 
             if (!user) {
@@ -57,6 +67,68 @@ class UserService {
             return await User.findAll();
         } catch (error: any) {
             throw new Error('Error fetching users: ' + error.message);
+        }
+    }
+
+    async createMedicalProfile(userId: number, medicalHistory: string, allergies: string) {
+        try {
+            // Vérifier si le patient existe et est bien un patient (role = 0)
+            const user = await User.findOne({
+                where: { user_id: userId, role: 0 }
+            });
+
+            if (!user) {
+                throw new Error('Patient not found or user is not a patient');
+            }
+
+            // Vérifier si un profil médical existe déjà (relation 1:1)
+            const existingProfile = await MedicalProfile.findOne({
+                where: { user_id: userId }
+            });
+
+            if (existingProfile) {
+                throw new Error('Medical profile already exists for this patient');
+            }
+
+            
+            const newProfile = await MedicalProfile.create({
+                user_id: userId,
+                medical_history: typeof medicalHistory === 'object' ? JSON.stringify(medicalHistory) : medicalHistory,
+                allergies: typeof allergies === 'object' ? JSON.stringify(allergies) : allergies,
+            });
+
+            return newProfile;
+        } catch (error: any) {
+            throw new Error('Error creating medical profile: ' + error.message);
+        }
+    }
+
+    async getPatientDetailsWithProfile(userId: number) {
+        try {
+            
+            const user = await User.findOne({
+                where: { user_id: userId, role: 0 }
+            });
+
+            if (!user) {
+                throw new Error('Patient not found or user is not a patient');
+            }
+
+            
+            const [results] = await sequelize.query(`
+                SELECT * FROM patient_medical_view WHERE user_id = :userId
+            `, {
+                replacements: { userId },
+                type: QueryTypes.SELECT
+            });
+
+            if (!results) {
+                throw new Error('No details found for this patient');
+            }
+
+            return results; // Retourne le premier résultat (les données combinées)
+        } catch (error: any) {
+            throw new Error('Error fetching patient details: ' + error.message);
         }
     }
 }
