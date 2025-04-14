@@ -11,6 +11,7 @@ interface IUser {
     birthday: Date;
     address: string;
     phone_number: string;
+    status: number;
 }
 
 interface IUserCreationAttributes extends Optional<IUser, 'user_id'> {}
@@ -25,6 +26,7 @@ class User extends Model<IUser, IUserCreationAttributes> implements IUser {
     public birthday!: Date;
     public address!: string;
     public phone_number!: string;
+    public status!: number;
 
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
@@ -66,15 +68,19 @@ User.init(
         },
         birthday: {
             type: DataTypes.DATE,
-            allowNull: true,
+            allowNull: false,
         },
         address: {
             type: DataTypes.STRING,
-            allowNull: true,
+            allowNull: false,
         },
         phone_number: {
             type: DataTypes.STRING,
-            allowNull: true,
+            allowNull: false,
+        },
+        status: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
         },
     },
     {
