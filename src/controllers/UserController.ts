@@ -1,7 +1,7 @@
 import UserService from "../services/UserService";
 
 const register = async (req: any, res: any) => {
-    const { name, firstname, birthday, email, password, role, address, phone_number, status } = req.body;
+    const { name, firstname, birthday, email, password, role, address, phone_number, status = 0 } = req.body;
 
     if (![0, 1, 2].includes(role)) {
         return res.status(400).json({ error: 'Invalid role. Role must be 0 (patient), 1 (médecin), or 2 (admin).' });
@@ -26,11 +26,14 @@ const login = async (req: any, res: any) => {
         const { message, user } = await UserService.login(identifier, password);
         
         if(user){
+        
             return res.status(200).json({ 
                 success: true,
                 message,
                 user
             });
+        
+            
         }else{
             res.status(401).json({
                 success: false, 
