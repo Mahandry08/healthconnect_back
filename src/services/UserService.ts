@@ -73,8 +73,8 @@ class UserService {
     async getMedicalProfilById(user_id: number){
         try {
             const profile = await sequelize.query('SELECT * FROM patient_medical_view WHERE user_id = :id', {
-              replacements: { id: user_id }, // Parameterized query
-              type: QueryTypes.SELECT, // Specify query type
+              replacements: { id: user_id }, 
+              type: QueryTypes.SELECT,
             });
             return await profile;
         } catch (error: any) {
@@ -84,18 +84,20 @@ class UserService {
 
     async getAllDoctors() {
         try {
-            return await User.findAll({
-                where: { role: 1 , status : 1}
+            const doctors = await sequelize.query('SELECT * FROM doctors_view', {
+              type: QueryTypes.SELECT
             });
+            return await doctors;
         } catch (error: any) {
-            throw new Error('Error fetching users: ' + error.message);
+            throw new Error('Error fetching doctors : ' + error.message );
         }
     }
 
     async getAllPatients() {
         try {
             return await User.findAll({
-                where: { role: 0 , status : 1 }
+                where: { role: 0 , status : 1 },
+                attributes: { exclude: ['password'] }
             });
         } catch (error: any) {
             throw new Error('Error fetching users: ' + error.message);
@@ -105,7 +107,8 @@ class UserService {
     async getAllUsersNotActivated() {
         try {
             return await User.findAll({
-                where: { status : 0 }
+                where: { status : 0 },
+                attributes: { exclude: ['password'] }
             });
         } catch (error: any) {
             throw new Error('Error fetching users: ' + error.message);
