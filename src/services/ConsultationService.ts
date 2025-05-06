@@ -22,15 +22,28 @@ class ConsultationService {
         return await Consultation.findByPk(id);
     }
 
-    async allConsultationsByPatientId(user_id: number) {
+    async allConsultationsByPatientId(patient_id: number) {
         try {
-            const consultations = await sequelize.query('SELECT * FROM patient_consultations_view WHERE user_id = :id', {
-              replacements: { id: user_id }, 
+            const consultations = await sequelize.query('SELECT * FROM patient_consultations_view WHERE patient_id = :id', {
+              replacements: { id: patient_id }, 
               type: QueryTypes.SELECT,
             });
             return await consultations;
         } catch (error: any) {
             throw new Error('Error fetching patient consultations : ' + error.message );
+        }
+    }
+
+
+    async allConsultationsByDoctorId(doctor_id: number) {
+        try {
+            const consultations = await sequelize.query('SELECT * FROM doctor_consultations_view WHERE doctor_id = :id', {
+              replacements: { id: doctor_id }, 
+              type: QueryTypes.SELECT,
+            });
+            return await consultations;
+        } catch (error: any) {
+            throw new Error('Error fetching doctor consultations : ' + error.message );
         }
     }
 }

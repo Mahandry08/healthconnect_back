@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.post('/schedule', ConsultationController.scheduleConsultation);
 router.post('/patientConsultations', ConsultationController.consultationsByPatientId);
-//router.get('/:userId', ConsultationController.searchByUserID);
-router.get('/:id', ConsultationController.searchConsultationByID);
+router.post('/doctorConsultations', ConsultationController.consultationsByDoctorId);
+//router.get('/:id', ConsultationController.searchConsultationByID);
 
 export default router;

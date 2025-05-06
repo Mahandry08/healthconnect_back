@@ -51,22 +51,39 @@ const searchConsultationByID = async (req: any, res: any) => {
 };
 
 const consultationsByPatientId = async (req: any, res: any) => {
-    const {userId} = req.body;
+    const {patient_id} = req.body;
 
     try {
-        const consultations = await ConsultationService.allConsultationsByPatientId(userId);
+        const consultationsP = await ConsultationService.allConsultationsByPatientId(patient_id);
 
-        if(!consultations){
-            return res.status(404).json({ error: 'Consultations not found.' });
-        }
-
-        if(consultations.length > 0){
-            res.status(200).json(consultations);
+        if(consultationsP.length > 0){
+            res.status(200).json(consultationsP);
+        }else{
+            res.status(404).json({error: 'No consultations found.'});
         }
         
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: 'Error retrieving users', error });
+        res.status(500).json({ message: 'Error retrieving patient consultations', error });
+    }
+};
+
+
+const consultationsByDoctorId = async (req: any, res: any) => {
+    const {doctor_id} = req.body;
+
+    try {
+        const consultationsD = await ConsultationService.allConsultationsByDoctorId(doctor_id);
+
+        if(consultationsD.length > 0){
+            res.status(200).json(consultationsD);
+        }else{
+            res.status(404).json({error: 'No consultations found.'});
+        }
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error retrieving doctor consultations', error });
     }
 };
 
@@ -74,5 +91,6 @@ export default {
     //searchByUserID,
     searchConsultationByID,
     scheduleConsultation,
+    consultationsByDoctorId,
     consultationsByPatientId
 };

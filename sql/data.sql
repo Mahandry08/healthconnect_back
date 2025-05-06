@@ -195,7 +195,7 @@ WHERE
 CREATE VIEW patient_consultations_view AS
 SELECT 
     c.consultation_id,
-    c.user_id AS user_id,
+    c.user_id AS patient_id,
     u.name AS patient_name,
     u.firstname AS patient_firstname,
     u.email AS patient_email,
@@ -216,3 +216,30 @@ FROM
 WHERE 
     u.role = 0
     AND c.status = 1;
+
+
+CREATE VIEW doctor_consultations_view AS
+SELECT 
+    c.consultation_id,
+    c.user_id AS patient_id,
+    u.name AS patient_name,
+    u.firstname AS patient_firstname,
+    u.email AS patient_email,
+    c.doctor_id,
+    d.name AS doctor_name,
+    d.firstname AS doctor_firstname,
+    c.consultation_date,
+    c.diagnostic,
+    c.status AS consultation_status,
+    c.speciality_id,
+    s.speciality_name,
+    c.createdAt AS consultation_createdAt,
+    c.updatedAt AS consultation_updatedAt
+FROM 
+    consultations c
+    INNER JOIN users u ON c.user_id = u.user_id
+    INNER JOIN users d ON c.doctor_id = d.user_id
+    INNER JOIN specialities s ON c.speciality_id = s.speciality_id
+WHERE 
+    d.role = 1
+	AND c.status = 1;
