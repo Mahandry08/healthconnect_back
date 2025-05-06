@@ -8,9 +8,9 @@ router.post('/signup', UserController.register);
 router.get('/users', UserController.users);
 router.post('/login', UserController.login);
 router.post('/addmedicalprofile', UserController.addMedicalprofile);
-router.post('/notactivated', UserController.usersNotActivated);
-router.post('/doctors', UserController.doctors);
-router.post('/patients', UserController.patients);
+router.get('/notactivated', UserController.usersNotActivated);
+router.get('/doctors', UserController.doctors);
+router.get('/patients', UserController.patients);
 router.post('/patientProfile', UserController.patientProfile);
 router.post('/sendemail', EmailController.sendEmailController);
 
