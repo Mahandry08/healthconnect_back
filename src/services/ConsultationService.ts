@@ -1,5 +1,6 @@
-import { Op } from "sequelize";
+import { Op, QueryTypes } from "sequelize";
 import Consultation  from "../models/Consultation";
+import { sequelize } from '../database/Database';
 
 class ConsultationService {
     // Search for consultations by userId (either patient or doctor)
@@ -21,11 +22,15 @@ class ConsultationService {
         return await Consultation.findByPk(id);
     }
 
-    async allConsultations() {
+    async allConsultationsByPatientId(user_id: number) {
         try {
-            return await Consultation.findAll();
+            const consultations = await sequelize.query('SELECT * FROM patient_consultations_view WHERE user_id = :id', {
+              replacements: { id: user_id }, 
+              type: QueryTypes.SELECT,
+            });
+            return await consultations;
         } catch (error: any) {
-            throw new Error('Error fetching consultations: ' + error.message);
+            throw new Error('Error fetching patient consultations : ' + error.message );
         }
     }
 }

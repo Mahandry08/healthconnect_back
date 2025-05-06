@@ -50,8 +50,29 @@ const searchConsultationByID = async (req: any, res: any) => {
     }
 };
 
+const consultationsByPatientId = async (req: any, res: any) => {
+    const {userId} = req.body;
+
+    try {
+        const consultations = await ConsultationService.allConsultationsByPatientId(userId);
+
+        if(!consultations){
+            return res.status(404).json({ error: 'Consultations not found.' });
+        }
+
+        if(consultations.length > 0){
+            res.status(200).json(consultations);
+        }
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error retrieving users', error });
+    }
+};
+
 export default {
     //searchByUserID,
     searchConsultationByID,
     scheduleConsultation,
+    consultationsByPatientId
 };

@@ -172,3 +172,47 @@ ALTER TABLE prescriptions ADD CONSTRAINT fk_prescriptions_consultations FOREIGN 
 
 CREATE VIEW patient_medical_view AS select `u`.`user_id` AS `user_id`,`u`.`name` AS `name`,`u`.`firstname` AS `firstname`,`u`.`email` AS `email`,`u`.`phone_number` AS `phone_number`,`u`.`birthday` AS `birthday`,`u`.`address` AS `address`,`mp`.`medical_history` AS `medical_history`,`mp`.`allergies` AS `allergies` from (`users` `u` left join `medical_profile` `mp` on(`u`.`user_id` = `mp`.`user_id`)) where `u`.`role` = 0;
 
+CREATE VIEW doctors_view AS
+SELECT 
+    u.user_id,
+    u.name,
+    u.firstname,
+    u.email,
+    u.phone_number,
+    u.address,
+    s.speciality_id,
+    s.speciality_name,
+    s.description AS speciality_description
+FROM 
+    users u
+    INNER JOIN doctor_specialities ds ON u.user_id = ds.user_id
+    INNER JOIN specialities s ON ds.speciality_id = s.speciality_id
+WHERE 
+    u.status = 1
+    AND u.role = 1;
+
+
+CREATE VIEW patient_consultations_view AS
+SELECT 
+    c.consultation_id,
+    c.user_id AS user_id,
+    u.name AS patient_name,
+    u.firstname AS patient_firstname,
+    u.email AS patient_email,
+    c.doctor_id,
+    d.name AS doctor_name,
+    d.firstname AS doctor_firstname,
+    c.consultation_date,
+    c.diagnostic,
+    c.status AS consultation_status,
+    s.speciality_name,
+    c.createdAt AS consultation_createdAt,
+    c.updatedAt AS consultation_updatedAt
+FROM 
+    consultations c
+    INNER JOIN users u ON c.user_id = u.user_id
+    INNER JOIN users d ON c.doctor_id = d.user_id
+    INNER JOIN specialities s ON c.speciality_id = s.speciality_id
+WHERE 
+    u.role = 0
+    AND c.status = 1;
