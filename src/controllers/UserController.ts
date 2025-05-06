@@ -87,7 +87,7 @@ const doctors = async(req : any, res: any) =>{
 
 const patients = async(req : any, res: any) =>{
     try {
-        const patients = await UserService.getAllUsers();
+        const patients = await UserService.getAllPatients();
         if(patients.length > 0){
             res.status(200).json(patients);
         }else{
