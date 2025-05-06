@@ -70,6 +70,36 @@ class UserService {
         }
     }
 
+    async getAllDoctors() {
+        try {
+            return await User.findAll({
+                where: { role: 1 , status : 1}
+            });
+        } catch (error: any) {
+            throw new Error('Error fetching users: ' + error.message);
+        }
+    }
+
+    async getAllPatients() {
+        try {
+            return await User.findAll({
+                where: { role: 0 , status : 1 }
+            });
+        } catch (error: any) {
+            throw new Error('Error fetching users: ' + error.message);
+        }
+    }
+
+    async getAllUsersNotActivated() {
+        try {
+            return await User.findAll({
+                where: { status : 0 }
+            });
+        } catch (error: any) {
+            throw new Error('Error fetching users: ' + error.message);
+        }
+    }
+
     async createMedicalProfile(userId: number, medicalHistory: string, allergies: string) {
         try {
             // Vérifier si le patient existe et est bien un patient (role = 0)

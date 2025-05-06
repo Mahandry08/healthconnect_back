@@ -57,6 +57,49 @@ const users = async(req : any, res: any) =>{
     }
 }
 
+const usersNotActivated = async(req : any, res: any) =>{
+    try {
+        const users = await UserService.getAllUsersNotActivated();
+        if(users.length > 0){
+            res.status(200).json(users);
+        }else{
+            res.status(404).json({ message: 'No patients found' });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error retrieving users not activated', error });
+    }
+}
+
+const doctors = async(req : any, res: any) =>{
+    try {
+        const doctors = await UserService.getAllDoctors();
+        if(doctors.length > 0){
+            res.status(200).json(doctors);
+        }else{
+            res.status(404).json({ message: 'No patients found' });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error retrieving doctors', error });
+    }
+}
+
+const patients = async(req : any, res: any) =>{
+    try {
+        const patients = await UserService.getAllUsers();
+        if(patients.length > 0){
+            res.status(200).json(patients);
+        }else{
+            res.status(404).json({ message: 'No patients found' });
+        }
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error retrieving patients', error });
+    }
+}
+
 const addMedicalprofile = async (req: any, res: any) => {
     const { userId, medicalHistory, allergies} = req.body;
 
@@ -86,6 +129,9 @@ const patientProfile = async(req : any, res: any) =>{
 export default{
     register,
     login,
+    patients,
+    doctors,
+    usersNotActivated,
     users,
     addMedicalprofile,
     patientProfile
