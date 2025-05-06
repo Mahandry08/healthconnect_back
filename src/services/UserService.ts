@@ -70,6 +70,18 @@ class UserService {
         }
     }
 
+    async getMedicalProfilById(user_id: number){
+        try {
+            const profile = await sequelize.query('SELECT * FROM patient_medical_view WHERE user_id = :id', {
+              replacements: { id: user_id }, // Parameterized query
+              type: QueryTypes.SELECT, // Specify query type
+            });
+            return await profile;
+        } catch (error: any) {
+            throw new Error('Error fetching user medical profile : ' + error.message );
+        }
+    }
+
     async getAllDoctors() {
         try {
             return await User.findAll({

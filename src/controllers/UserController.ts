@@ -71,6 +71,21 @@ const usersNotActivated = async(req : any, res: any) =>{
     }
 }
 
+const medicalProfileById = async(req : any, res: any) =>{
+    const { user_id } = req.body;
+    try {
+        const profile = await UserService.getMedicalProfilById(user_id);
+        if(profile.length > 0){
+            res.status(200).json(profile);
+        }else{
+            res.status(404).json({ message: 'No medical profile found' });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error retrieving users medical profile', error });
+    }
+}
+
 const doctors = async(req : any, res: any) =>{
     try {
         const doctors = await UserService.getAllDoctors();
@@ -128,6 +143,7 @@ const patientProfile = async(req : any, res: any) =>{
 
 export default{
     register,
+    medicalProfileById,
     login,
     patients,
     doctors,

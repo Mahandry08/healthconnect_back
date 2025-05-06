@@ -12,6 +12,7 @@ router.get('/notactivated', UserController.usersNotActivated);
 router.get('/doctors', UserController.doctors);
 router.get('/patients', UserController.patients);
 router.post('/patientProfile', UserController.patientProfile);
+router.post('/medicalProfile', UserController.medicalProfileById);
 router.post('/sendemail', EmailController.sendEmailController);
 
 export default router;

@@ -20,6 +20,14 @@ class ConsultationService {
     async searchConsultationByID(id: number) {
         return await Consultation.findByPk(id);
     }
+
+    async allConsultations() {
+        try {
+            return await Consultation.findAll();
+        } catch (error: any) {
+            throw new Error('Error fetching consultations: ' + error.message);
+        }
+    }
 }
 
 export default new ConsultationService();
