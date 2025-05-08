@@ -57,6 +57,32 @@ const users = async(req : any, res: any) =>{
     }
 }
 
+const specialities = async(req : any, res: any) =>{
+    try {
+        const specialities = await UserService.getAllDoctorSpecialities();
+        res.status(200).json(specialities);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error retrieving doctor specialities', error });
+    }
+}
+
+const addSpeciality = async (req: any, res: any) => {
+    const { name, description} = req.body;
+
+    try {
+        const newSpec= await UserService.newDoctorSpeciality(name, description);
+        res.status(200).json({
+            message: 'New speciality added successfully!', 
+            speciality: newSpec 
+        });
+
+    } catch (error: any) {
+        console.error(error); 
+        res.status(500).json({ error: error.message || 'Speciality add failed' });
+    }
+};
+
 const usersNotActivated = async(req : any, res: any) =>{
     try {
         const users = await UserService.getAllUsersNotActivated();
@@ -136,7 +162,7 @@ const addMedicalprofile = async (req: any, res: any) => {
     try {
         
         const newProfile= await UserService.createMedicalProfile(userId, medicalHistory, allergies);
-        res.status(201).json({ message: 'Medical profile updated successfully!', profile: newProfile });
+        res.status(201).json({ message: 'Medical profile added successfully!', profile: newProfile });
 
     } catch (error: any) {
         console.error(error); 
@@ -168,13 +194,16 @@ const changePassword = async (req: any, res: any) => {
     }
 };
 
+
 export default{
     register,
     forgotPasswordSendEmail,
     medicalProfileById,
+    addSpeciality,
     changePassword,
     login,
     patients,
+    specialities,
     doctors,
     usersNotActivated,
     users,

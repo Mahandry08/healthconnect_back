@@ -4,6 +4,7 @@ import MedicalProfile from '../models/MedicalProfile';
 import User from '../models/User';
 import bcrypt from 'bcrypt';
 import EmailService from './EmailService';
+import Specialities from '../models/Speciality';
 
 class UserService {
     // Register user
@@ -27,10 +28,9 @@ class UserService {
         }
     }
 
-    // Login user
+    
     async login(identifier: string, password: string) {
         try {
-            // Find user by email or by phone number
 
             const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier);
 
@@ -48,14 +48,12 @@ class UserService {
                 return {message: 'Email or phone invalid'};
             }
 
-            // Compare provided password with stored password
             const isPasswordValid = await bcrypt.compare(password, user.password);
 
             if (!isPasswordValid) {
                 return {message: 'Password invalid'};
             }
 
-            // Return user details (but no session or token)
             return { message: 'Login successful', user };
         } catch (error: any) {
             throw new Error('Login failed: ' + error.message);
@@ -68,6 +66,14 @@ class UserService {
             return await User.findAll();
         } catch (error: any) {
             throw new Error('Error fetching users: ' + error.message);
+        }
+    }
+
+    async getAllDoctorSpecialities() {
+        try {
+            return await Specialities.findAll();
+        } catch (error: any) {
+            throw new Error('Error fetching docor specialities: ' + error.message);
         }
     }
 
@@ -99,7 +105,7 @@ class UserService {
                 };
             }
         }catch (error: any) {
-            throw new Error('Error fetching doctors : ' + error.message );
+            throw new Error('Error sending email forgot password : ' + error.message );
         }
     }
 
@@ -223,6 +229,20 @@ class UserService {
 
         } catch (error: any) {
             throw new Error('Error changing password: ' + error.message);
+        }
+    }
+
+    async newDoctorSpeciality(name: string, description: string) {
+        try {
+
+            const newSpeciality = await Specialities.create({
+                speciality_name: name,
+                description: description              
+            });
+
+            return newSpeciality;
+        } catch (error: any) {
+            throw new Error('Error creating medical profile: ' + error.message);
         }
     }
 }

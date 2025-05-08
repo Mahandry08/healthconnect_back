@@ -11,7 +11,7 @@ interface IUser {
     birthday: Date;
     address: string;
     phone_number: string;
-    status: number;
+    status: number; // 0: not activated, 1: activated
 }
 
 interface IUserCreationAttributes extends Optional<IUser, 'user_id'> {}
@@ -84,9 +84,9 @@ User.init(
         },
     },
     {
-        sequelize, // Pass the sequelize instance
-        tableName: 'users', // Table name in the database
-        modelName: 'User', // Model name in Sequelize
+        sequelize, 
+        tableName: 'users', 
+        modelName: 'User', 
     }
 );
 

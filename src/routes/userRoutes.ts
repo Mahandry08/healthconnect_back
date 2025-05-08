@@ -6,6 +6,8 @@ const router = express.Router();
 
 router.post('/signup', UserController.register);
 router.get('/users', UserController.users);
+router.get('/specialities', UserController.specialities);
+router.post('/addSpeciality', UserController.addSpeciality);
 router.post('/login', UserController.login);
 router.post('/addmedicalprofile', UserController.addMedicalprofile);
 router.get('/notactivated', UserController.usersNotActivated);
