@@ -5,6 +5,7 @@ import { connectToDatabase, start } from './src/database/Database';
 import consultationRoutes from './src/routes/consultationRoutes';
 import prescriptionRoutes from './src/routes/prescriptionRoutes';
 import userRoutes from './src/routes/userRoutes';
+import chatRoutes from './src/routes/chatRoutes';
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ start();
 app.use('/api/consultations', consultationRoutes);
 app.use('/api/prescriptions', prescriptionRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/chats', chatRoutes);
 
 // Default route
 app.get('/', (req, res) => {

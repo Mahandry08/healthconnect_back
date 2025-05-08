@@ -1,7 +1,7 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from '../database/Database';
 
-// Consultation Model
+
 interface IConsultation {
     consultation_id: number;
     patient_id: number;
