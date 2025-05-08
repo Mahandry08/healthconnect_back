@@ -3,6 +3,7 @@ import { sequelize } from '../database/Database';
 import MedicalProfile from '../models/MedicalProfile';
 import User from '../models/User';
 import bcrypt from 'bcrypt';
+import EmailService from './EmailService';
 
 class UserService {
     // Register user
@@ -79,6 +80,26 @@ class UserService {
             return await profile;
         } catch (error: any) {
             throw new Error('Error fetching user medical profile : ' + error.message );
+        }
+    }
+
+    async sendEmailForgotPassword(email: string, to: string, subject: string, text: string, html: string) {
+        try {
+            const user = await User.findOne({where: {email: email}});
+            if(user){
+                await EmailService.sendEmail({
+                    to, 
+                    subject, 
+                    text, 
+                    html
+                });
+            }else{
+                return {
+                    message: 'Email not found'
+                };
+            }
+        }catch (error: any) {
+            throw new Error('Error fetching doctors : ' + error.message );
         }
     }
 

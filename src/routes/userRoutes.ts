@@ -14,5 +14,6 @@ router.get('/patients', UserController.patients);
 router.post('/patientProfile', UserController.patientProfile);
 router.post('/medicalProfile', UserController.medicalProfileById);
 router.post('/sendEmail', EmailController.sendEmailController);
+router.post('/forgotPassword', UserController.forgotPasswordSendEmail);
 
 export default router;

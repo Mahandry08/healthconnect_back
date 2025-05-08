@@ -100,6 +100,21 @@ const doctors = async(req : any, res: any) =>{
     }
 }
 
+const forgotPasswordSendEmail = async(req : any, res: any) =>{
+    const {email, to, subject, text, html} = req.body;
+    try {
+        const result = await UserService.sendEmailForgotPassword(email, to, subject, text, html);
+        if(!result?.message){
+            res.status(200).json({succes: true, message: 'Email sent successfully' });
+        }else{
+            res.status(404).json({success: false, message: 'Email not found' });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error retrieving doctors', error });
+    }
+}
+
 const patients = async(req : any, res: any) =>{
     try {
         const patients = await UserService.getAllPatients();
@@ -119,7 +134,7 @@ const addMedicalprofile = async (req: any, res: any) => {
     const { userId, medicalHistory, allergies} = req.body;
 
     try {
-        // Await the result of the registration method
+        
         const newProfile= await UserService.createMedicalProfile(userId, medicalHistory, allergies);
         res.status(201).json({ message: 'Medical profile updated successfully!', profile: newProfile });
 
@@ -143,6 +158,7 @@ const patientProfile = async(req : any, res: any) =>{
 
 export default{
     register,
+    forgotPasswordSendEmail,
     medicalProfileById,
     login,
     patients,
