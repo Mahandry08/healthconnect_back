@@ -87,10 +87,51 @@ const consultationsByDoctorId = async (req: any, res: any) => {
     }
 };
 
+const getAvailableDoctors = async (req: any, res: any) => {
+    const { date, time , speciality_id} = req.body;
+    try {
+        
+        if (!date || !time) {
+            return res.status(400).json({ 
+                error: 'Date and time parameters are required' 
+            });
+        }
+
+        // Validation du format de la date (YYYY-MM-DD)
+        const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+        if (!dateRegex.test(date as string)) {
+            return res.status(400).json({ 
+                error: 'Invalid date format. Use YYYY-MM-DD' 
+            });
+        }
+
+        // Validation du format de l'heure (HH:MM)
+        const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
+        if (!timeRegex.test(time as string)) {
+            return res.status(400).json({ 
+                error: 'Invalid time format. Use HH:MM' 
+            });
+        }
+
+        const doctors = await ConsultationService.getAvailableDoctors(
+            date as string, 
+            time as string,
+            speciality_id as number
+        );
+        
+        return res.status(200).json(doctors);
+    } catch (error: any) {
+        return res.status(500).json({ 
+            error: 'Error fetching available doctors: ' + error.message 
+        });
+    }
+}
+
 export default {
     //searchByUserID,
+    getAvailableDoctors,
     searchConsultationByID,
     scheduleConsultation,
     consultationsByDoctorId,
-    consultationsByPatientId
+    consultationsByPatientId,
 };
