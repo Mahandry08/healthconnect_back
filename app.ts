@@ -32,5 +32,5 @@ app.get('/', (req, res) => {
 
 app.listen(PORT, () => {
     //console.log(`Server is running on http://192.168.88.8:${PORT}`); //for physical device
-    console.log(`Server is running on http://localhost:${PORT}`); //for android emulator
+    //console.log(`Server is running on http://localhost:${PORT}`); //for android emulator
 });

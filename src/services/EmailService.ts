@@ -1,21 +1,43 @@
-import sender from "../configs/EmailConfig";
+import nodemailer, { Transporter } from 'nodemailer';
 
-export const sendEmail = async (to: string, subject: string, message: string) => {
-  try {
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to,
-      subject,
-      text: message,
-    };
+interface EmailOptions {
+  to: string;
+  subject: string;
+  text?: string;
+  html?: string;
+}
 
-    const info = await sender.sendMail(mailOptions);
-    if(info){
-        console.log("Lasa le izy lekaaaa!!!!!!");
-        return info;
-    }
+class EmailService {
+  private transporter: Transporter;
+
+  constructor() {
     
-  } catch (error) {
-    throw new Error(`Failed to send email: ${error}`);
+    this.transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS, 
+      },
+    });
   }
-};
+
+  async sendEmail(options: EmailOptions): Promise<void> {
+    try {
+      const mailOptions = {
+        from: process.env.EMAIL_USER, 
+        to: options.to, 
+        subject: options.subject, 
+        text: options.text, 
+        html: options.html, 
+      };
+
+      const info = await this.transporter.sendMail(mailOptions);
+      console.log('Email envoyé : %s', info.messageId);
+    } catch (error) {
+      console.error('Erreur lors de l\'envoi de l\'email :', error);
+      throw new Error('Échec de l\'envoi de l\'email');
+    }
+  }
+}
+
+export default new EmailService();

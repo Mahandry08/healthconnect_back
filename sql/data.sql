@@ -124,8 +124,8 @@ CREATE  TABLE consultations (
  );
 
 INSERT INTO consultations (user_id, doctor_id, consultation_date, diagnostic, videocall_id, status, speciality_id) VALUES
-(1, 2, '2025-05-06 10:00:00', 'Contrôle de l’hypertension', 1001, 1, 1),
-(3, 4, '2025-05-07 14:00:00', 'Suivi de l’asthme', 1002, 1, 3);
+(5, 2, '2025-05-12 08:30:00', 'Contrôle Hémoroïde', 1004, 1, 1),
+(6, 4, '2025-05-13 15:20:00', 'Contrôle cardiaque', 1005, 1, 3);
 
 
 CREATE INDEX fk_consultations_users ON consultations ( user_id );
@@ -170,7 +170,14 @@ ALTER TABLE medical_profile ADD CONSTRAINT medical_profile_ibfk_1 FOREIGN KEY ( 
 
 ALTER TABLE prescriptions ADD CONSTRAINT fk_prescriptions_consultations FOREIGN KEY ( consultation_id ) REFERENCES consultations( consultation_id ) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
-CREATE VIEW patient_medical_view AS select `u`.`user_id` AS `user_id`,`u`.`name` AS `name`,`u`.`firstname` AS `firstname`,`u`.`email` AS `email`,`u`.`phone_number` AS `phone_number`,`u`.`birthday` AS `birthday`,`u`.`address` AS `address`,`mp`.`medical_history` AS `medical_history`,`mp`.`allergies` AS `allergies` from (`users` `u` left join `medical_profile` `mp` on(`u`.`user_id` = `mp`.`user_id`)) where `u`.`role` = 0;
+CREATE VIEW patient_medical_view AS 
+SELECT 
+	u.user_id AS user_id,
+	u.firstname AS firstname,
+	mp.medical_history AS medical_history,
+	mp.allergies AS allergies 
+FROM 
+	(users u LEFT JOIN medical_profile mp ON(u.user_id = mp.user_id)) WHERE u.role = 0;
 
 CREATE VIEW doctors_view AS
 SELECT 

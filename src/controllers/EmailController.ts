@@ -1,21 +1,22 @@
-import { sendEmail } from "../services/EmailService";
+import EmailService from "../services/EmailService";
 
 const sendEmailController = async (req: any, res: any) => {
-  const { to, subject, message } = req.body;
+    const { to, subject, text, html } = req.body;
 
-  if (!to || !subject || !message) {
-    return res.status(400).json({ error: "Missing required fields" });
-  }
+    try {
+      await EmailService.sendEmail({
+        to, 
+        subject, 
+        text, 
+        html
+      });
 
-  try {
-    const info = await sendEmail(to, subject, message);
-    
-    if(info){
-        res.json({ success: true, message: "Email sent successfully!", info });
-    }    
-  } catch (error) {
-    res.status(500).json({ error: "Failed to send email"});
-  }
+      res.status(200).json({success: true, message: 'Email sent successfully' });
+
+    } catch (e: any) {
+        console.error(e);
+        res.status(500).json({succes: false, message: 'There is an error while sending the email', error : e });
+    }
 };
 
 export default{

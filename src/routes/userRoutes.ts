@@ -13,6 +13,6 @@ router.get('/doctors', UserController.doctors);
 router.get('/patients', UserController.patients);
 router.post('/patientProfile', UserController.patientProfile);
 router.post('/medicalProfile', UserController.medicalProfileById);
-router.post('/sendemail', EmailController.sendEmailController);
+router.post('/sendEmail', EmailController.sendEmailController);
 
 export default router;
