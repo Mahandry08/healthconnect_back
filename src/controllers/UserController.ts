@@ -111,7 +111,7 @@ const forgotPasswordSendEmail = async(req : any, res: any) =>{
         }
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: 'Error retrieving doctors', error });
+        res.status(500).json({ message: 'Error sending email', error });
     }
 }
 
@@ -156,10 +156,23 @@ const patientProfile = async(req : any, res: any) =>{
     }
 }
 
+const changePassword = async (req: any, res: any) => {
+    const { user_id, currentPassword, newPassword } = req.body;
+
+    try {
+        const result = await UserService.changePassword(user_id, currentPassword, newPassword);
+        res.status(200).json(result);
+    } catch (error: any) {
+        console.error(error);
+        res.status(500).json({ error: error.message || 'Password change failed.' });
+    }
+};
+
 export default{
     register,
     forgotPasswordSendEmail,
     medicalProfileById,
+    changePassword,
     login,
     patients,
     doctors,

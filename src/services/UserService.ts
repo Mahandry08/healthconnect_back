@@ -1,4 +1,4 @@
-import { Op, QueryTypes } from 'sequelize';
+import { Op, QueryTypes, where } from 'sequelize';
 import { sequelize } from '../database/Database';
 import MedicalProfile from '../models/MedicalProfile';
 import User from '../models/User';
@@ -195,6 +195,34 @@ class UserService {
             return results; // Retourne le premier résultat (les données combinées)
         } catch (error: any) {
             throw new Error('Error fetching patient details: ' + error.message);
+        }
+    }
+
+    async changePassword(userId: string, currentPassword: string, newPassword: string) {
+        try {
+            const user = await User.findOne({
+                where: {user_id : userId}
+            });
+            if (!user) {
+                return {message: 'User not found'};
+            }
+
+            const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+            if (!isPasswordValid) {
+                return {message: 'Password doesn\'t match to old password'};
+            }
+
+            const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+            user.password = hashedNewPassword;
+            await user.save();
+
+            return { 
+                message: 'Password changed successfully!' 
+            };
+
+        } catch (error: any) {
+            throw new Error('Error changing password: ' + error.message);
         }
     }
 }
