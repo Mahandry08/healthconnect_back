@@ -182,6 +182,18 @@ const patientProfile = async(req : any, res: any) =>{
     }
 }
 
+const doctorProfile = async(req : any, res: any) =>{
+    
+    const {user_id} = req.body;
+    try {
+        const profile = await UserService.getDoctorProfileById(user_id);
+        res.status(200).json(profile);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error retrieving doctor profile', error });
+    }
+}
+
 const changePassword = async (req: any, res: any) => {
     const { user_id, currentPassword, newPassword } = req.body;
 
@@ -208,5 +220,6 @@ export default{
     usersNotActivated,
     users,
     addMedicalprofile,
-    patientProfile
+    patientProfile,
+    doctorProfile
 }

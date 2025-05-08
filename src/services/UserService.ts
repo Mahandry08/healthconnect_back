@@ -120,6 +120,18 @@ class UserService {
         }
     }
 
+    async getDoctorProfileById(doctor_id: number) {
+        try {
+            const profile = await sequelize.query('SELECT * FROM doctors_view where user_id = :id', {
+                replacements: { id: doctor_id }, 
+                type: QueryTypes.SELECT
+            });
+            return await profile;
+        } catch (error: any) {
+            throw new Error('Error fetching doctor profile : ' + error.message );
+        }
+    }
+
     async getAllPatients() {
         try {
             return await User.findAll({

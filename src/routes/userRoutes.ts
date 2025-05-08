@@ -14,6 +14,7 @@ router.get('/notactivated', UserController.usersNotActivated);
 router.get('/doctors', UserController.doctors);
 router.get('/patients', UserController.patients);
 router.post('/patientProfile', UserController.patientProfile);
+router.post('/doctorProfile', UserController.doctorProfile);
 router.post('/medicalProfile', UserController.medicalProfileById);
 router.post('/sendEmail', EmailController.sendEmailController);
 router.post('/forgotPassword', UserController.forgotPasswordSendEmail);
