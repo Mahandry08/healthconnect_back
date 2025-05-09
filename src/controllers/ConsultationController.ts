@@ -11,13 +11,13 @@ import ConsultationService from "../services/ConsultationService";
 };*/
 
 const scheduleConsultation = async (req: any, res: any) => {
-    const { patientId, doctorId, consultation_date, diagnostic, speciality_id } = req.body;
+    const { patient_id, doctor_id, consultation_date, diagnostic, speciality_id } = req.body;
 
     try {
         // Prepare the data for the new consultation
         const newConsultationData = {
-            patientId,
-            doctorId,
+            patient_id,
+            doctor_id,
             consultation_date, 
             diagnostic,
             speciality_id
