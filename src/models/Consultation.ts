@@ -4,7 +4,7 @@ import { sequelize } from '../database/Database';
 
 interface IConsultation {
     consultation_id: number;
-    patient_id: number;
+    user_id: number;
     doctor_id: number;
     consultation_date: Date;
     diagnostic: string;
@@ -16,7 +16,7 @@ interface IConsultationCreationAttributes extends Optional<IConsultation, 'consu
 
 class Consultation extends Model<IConsultation, IConsultationCreationAttributes> implements IConsultation {
     public consultation_id!: number;
-    public patient_id!: number;
+    public user_id!: number;
     public doctor_id!: number;
     public consultation_date!: Date;
     public diagnostic!: string;
@@ -34,7 +34,7 @@ Consultation.init(
             autoIncrement: true,
             primaryKey: true,
         },
-        patient_id: {
+        user_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
