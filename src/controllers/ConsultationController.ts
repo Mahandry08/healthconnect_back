@@ -16,7 +16,7 @@ const scheduleConsultation = async (req: any, res: any) => {
     try {
         // Prepare the data for the new consultation
         const newConsultationData = {
-            patient_id,
+            user_id: patient_id,
             doctor_id,
             consultation_date, 
             diagnostic,
