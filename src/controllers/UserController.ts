@@ -97,6 +97,19 @@ const usersNotActivated = async(req : any, res: any) =>{
     }
 }
 
+
+const activateUser = async(req : any, res: any) =>{
+    const {user_id} = req.body;
+    try {
+        await UserService.validateSignup(user_id);
+        return res.status(200).json({message: 'User activated successfully'});
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error activating user', error });
+    }
+}
+
+
 const medicalProfileById = async(req : any, res: any) =>{
     const { user_id } = req.body;
     try {
@@ -221,5 +234,6 @@ export default{
     users,
     addMedicalprofile,
     patientProfile,
-    doctorProfile
+    doctorProfile,
+    activateUser
 }

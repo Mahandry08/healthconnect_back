@@ -257,6 +257,17 @@ class UserService {
             throw new Error('Error creating medical profile: ' + error.message);
         }
     }
+
+    async validateSignup(user_id: number) {
+        try {
+            await sequelize.query('UPDATE users SET status = 1 WHERE user_id = :id', {
+              replacements: { id: user_id }, 
+              type: QueryTypes.UPDATE,
+            });
+        } catch (error: any) {
+            throw new Error('Error updating user status : ' + error.message );
+        }
+    }
 }
 
 export default new UserService();

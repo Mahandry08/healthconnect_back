@@ -19,5 +19,7 @@ router.post('/medicalProfile', UserController.medicalProfileById);
 router.post('/sendEmail', EmailController.sendEmailController);
 router.post('/forgotPassword', UserController.forgotPasswordSendEmail);
 router.post('/changePassword', UserController.changePassword);
+router.post('/activate', UserController.activateUser);
+
 
 export default router;

@@ -47,6 +47,17 @@ class ConsultationService {
         }
     }
 
+    async doctorValidateConsultation(consultation_id: number) {
+        try {
+            await sequelize.query('UPDATE consultations SET status = 1 WHERE consultation_id = :id', {
+              replacements: { id: consultation_id }, 
+              type: QueryTypes.UPDATE,
+            });
+        } catch (error: any) {
+            throw new Error('Error updating consultations status : ' + error.message );
+        }
+    }
+
     async getAvailableDoctors(date: string, time: string, speciality_id: number) {
         try {
             // Combiner la date et l'heure pour créer un timestamp

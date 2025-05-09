@@ -11,15 +11,16 @@ import ConsultationService from "../services/ConsultationService";
 };*/
 
 const scheduleConsultation = async (req: any, res: any) => {
-    const { patientId, doctorId, consultationDate, consultationTime, consultationType } = req.body;
+    const { patientId, doctorId, consultation_date, diagnostic, speciality_id } = req.body;
 
     try {
         // Prepare the data for the new consultation
         const newConsultationData = {
             patientId,
             doctorId,
-            scheduledTime: new Date(`${consultationDate} ${consultationTime}`), // Combining date and time
-            consultationType,
+            consultation_date, 
+            diagnostic,
+            speciality_id
         };
 
         // Call the service to schedule a consultation
@@ -49,6 +50,19 @@ const searchConsultationByID = async (req: any, res: any) => {
         res.status(500).json({ error: 'Error fetching consultation.' });
     }
 };
+
+const validateConsultation = async (req: any, res: any) => {
+    const {consultation_id} = req.body;
+    try {
+        await ConsultationService.doctorValidateConsultation(consultation_id);
+        return res.status(200).json({message: 'Consultation validated successfully!'});
+    } catch (error) {
+        console.error(error); // Log the error for debugging
+        res.status(500).json({ error: 'Error fetching consultation.' });
+    }
+};
+
+
 
 const consultationsByPatientId = async (req: any, res: any) => {
     const {patient_id} = req.body;
@@ -134,4 +148,5 @@ export default {
     scheduleConsultation,
     consultationsByDoctorId,
     consultationsByPatientId,
+    validateConsultation
 };
