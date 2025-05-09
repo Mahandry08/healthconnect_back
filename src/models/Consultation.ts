@@ -9,6 +9,7 @@ interface IConsultation {
     consultation_date: Date;
     diagnostic: string;
     videocall_id: number | null;
+    speciality_id: number
     status: number;
 }
 
@@ -22,6 +23,7 @@ class Consultation extends Model<IConsultation, IConsultationCreationAttributes>
     public diagnostic!: string;
     public videocall_id!: number | null;
     public status!: number; // 0 en attente, 1 terminé
+    public speciality_id!: number;
 
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
@@ -55,6 +57,10 @@ Consultation.init(
             allowNull: true,
         },
         status: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+        },
+        speciality_id: {
             type: DataTypes.INTEGER,
             allowNull: true,
         },
