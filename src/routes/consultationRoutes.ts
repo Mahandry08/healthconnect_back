@@ -8,6 +8,7 @@ router.post('/patientConsultations', ConsultationController.consultationsByPatie
 router.post('/doctorConsultations', ConsultationController.consultationsByDoctorId);
 router.post('/avalaibleDoctors', ConsultationController.getAvailableDoctors);
 router.post('/validate', ConsultationController.validateConsultation);
+router.post('/requests', ConsultationController.requestsByDoctorId);
 
 
 export default router;

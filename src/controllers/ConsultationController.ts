@@ -101,6 +101,27 @@ const consultationsByDoctorId = async (req: any, res: any) => {
     }
 };
 
+
+const requestsByDoctorId = async (req: any, res: any) => {
+    const {doctor_id} = req.body;
+
+    try {
+        const consultationsD = await ConsultationService.allRequestsById(doctor_id);
+
+        if(consultationsD.length > 0){
+            res.status(200).json(consultationsD);
+        }else{
+            res.status(404).json({error: 'No requests found.'});
+        }
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error retrieving doctor consultations', error });
+    }
+};
+
+
+
 const getAvailableDoctors = async (req: any, res: any) => {
     const { date, time , speciality_id} = req.body;
     try {
@@ -148,5 +169,6 @@ export default {
     scheduleConsultation,
     consultationsByDoctorId,
     consultationsByPatientId,
-    validateConsultation
+    validateConsultation,
+    requestsByDoctorId
 };

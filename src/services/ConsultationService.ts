@@ -47,6 +47,19 @@ class ConsultationService {
         }
     }
 
+    async allRequestsById(doctor_id: number) {
+        try {
+            const consultations = await sequelize.query('SELECT * FROM doctor_consultations_view WHERE doctor_id = :id & status = 0', {
+              replacements: { id: doctor_id }, 
+              type: QueryTypes.SELECT,
+            });
+            return await consultations;
+        } catch (error: any) {
+            throw new Error('Error fetching doctor consultations : ' + error.message );
+        }
+    }
+
+
     async doctorValidateConsultation(consultation_id: number) {
         try {
             await sequelize.query('UPDATE consultations SET status = 1 WHERE consultation_id = :id', {

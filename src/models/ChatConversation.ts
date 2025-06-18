@@ -14,6 +14,7 @@ class ChatConversation extends Model<IChatConversation, IChatConversationCreatio
     public chat_conversation_id!: number;
     public chat_id!: number;
     public conversation_id!: number;
+    chat: any;
 }
 
 ChatConversation.init(
