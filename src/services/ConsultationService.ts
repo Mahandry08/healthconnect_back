@@ -49,7 +49,7 @@ class ConsultationService {
 
     async allRequestsById(doctor_id: number) {
         try {
-            const consultations = await sequelize.query('SELECT * FROM doctor_consultations_view WHERE doctor_id = :id AND consultation_status = 0', {
+            const consultations = await sequelize.query('SELECT * FROM doctor_consultations_requests_view WHERE doctor_id = :id', {
               replacements: { id: doctor_id }, 
               type: QueryTypes.SELECT,
             });
