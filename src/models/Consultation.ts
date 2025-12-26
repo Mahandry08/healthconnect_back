@@ -1,25 +1,29 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from '../database/Database';
 
-// Consultation Model
+
 interface IConsultation {
     consultation_id: number;
-    patient_id: number;
+    user_id: number;
     doctor_id: number;
     consultation_date: Date;
     diagnostic: string;
     videocall_id: number | null;
+    speciality_id: number
+    status: number;
 }
 
 interface IConsultationCreationAttributes extends Optional<IConsultation, 'consultation_id' | 'videocall_id'> {}
 
 class Consultation extends Model<IConsultation, IConsultationCreationAttributes> implements IConsultation {
     public consultation_id!: number;
-    public patient_id!: number;
+    public user_id!: number;
     public doctor_id!: number;
     public consultation_date!: Date;
     public diagnostic!: string;
     public videocall_id!: number | null;
+    public status!: number; // 0 en attente, 1 terminé
+    public speciality_id!: number;
 
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
@@ -32,7 +36,7 @@ Consultation.init(
             autoIncrement: true,
             primaryKey: true,
         },
-        patient_id: {
+        user_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
@@ -52,7 +56,15 @@ Consultation.init(
             type: DataTypes.INTEGER,
             allowNull: true,
         },
-    },
+        status: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+        },
+        speciality_id: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+        },
+    },        
     {
         sequelize,
         tableName: 'consultations',

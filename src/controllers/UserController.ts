@@ -1,8 +1,7 @@
-import User from "../models/User";
 import UserService from "../services/UserService";
 
 const register = async (req: any, res: any) => {
-    const { name, firstname, birthday, email, password, role, address, phone_number } = req.body;
+    const { name, firstname, birthday, email, password, role, address, phone_number, status = 0 } = req.body;
 
     if (![0, 1, 2].includes(role)) {
         return res.status(400).json({ error: 'Invalid role. Role must be 0 (patient), 1 (médecin), or 2 (admin).' });
@@ -10,7 +9,7 @@ const register = async (req: any, res: any) => {
 
     try {
         // Await the result of the registration method
-        const newUser = await UserService.register(name, firstname, birthday, email, password, role, address, phone_number);
+        const newUser = await UserService.register(name, firstname, birthday, email, password, role, address, phone_number, status);
         res.status(201).json({ message: 'User registered successfully!', user: newUser });
 
     } catch (error: any) {
@@ -20,19 +19,33 @@ const register = async (req: any, res: any) => {
 };
 
 const login = async (req: any, res: any) => {
-    const { email, password } = req.body;
+    const { identifier, password } = req.body; 
 
     try {
-        // Call the login method from UserService
-        const { message, user } = await UserService.login(email, password);
-
-        // Return the user details (no session or token involved)
-        res.status(200).json({ message, user });
+        
+        const { message, user } = await UserService.login(identifier, password);
+        
+        if(user){
+        
+            return res.status(200).json({ 
+                success: true,
+                message,
+                user
+            });
+        
+            
+        }else{
+            res.status(401).json({
+                success: false, 
+                message
+            });
+        }
+        
     } catch (error: any) {
-        // Send a detailed error message in case of failure
-        res.status(401).json({ error: error.message || 'Login failed.' });
+        throw error;
     }
 };
+
 
 const users = async(req : any, res: any) =>{
     try {
@@ -44,8 +57,183 @@ const users = async(req : any, res: any) =>{
     }
 }
 
+const specialities = async(req : any, res: any) =>{
+    try {
+        const specialities = await UserService.getAllDoctorSpecialities();
+        res.status(200).json(specialities);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error retrieving doctor specialities', error });
+    }
+}
+
+const addSpeciality = async (req: any, res: any) => {
+    const { name, description} = req.body;
+
+    try {
+        const newSpec= await UserService.newDoctorSpeciality(name, description);
+        res.status(200).json({
+            message: 'New speciality added successfully!', 
+            speciality: newSpec 
+        });
+
+    } catch (error: any) {
+        console.error(error); 
+        res.status(500).json({ error: error.message || 'Speciality add failed' });
+    }
+};
+
+const usersNotActivated = async(req : any, res: any) =>{
+    try {
+        const users = await UserService.getAllUsersNotActivated();
+        if(users.length > 0){
+            res.status(200).json(users);
+        }else{
+            res.status(404).json({ message: 'No patients found' });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error retrieving users not activated', error });
+    }
+}
+
+
+const activateUser = async(req : any, res: any) =>{
+    const {user_id} = req.body;
+    try {
+        await UserService.validateSignup(user_id);
+        return res.status(200).json({message: 'User activated successfully'});
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error activating user', error });
+    }
+}
+
+
+const medicalProfileById = async(req : any, res: any) =>{
+    const { user_id } = req.body;
+    try {
+        const profile = await UserService.getMedicalProfilById(user_id);
+        if(profile.length > 0){
+            res.status(200).json(profile);
+        }else{
+            res.status(404).json({ message: 'No medical profile found' });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error retrieving users medical profile', error });
+    }
+}
+
+const doctors = async(req : any, res: any) =>{
+    try {
+        const doctors = await UserService.getAllDoctors();
+        if(doctors.length > 0){
+            res.status(200).json(doctors);
+        }else{
+            res.status(404).json({ message: 'No patients found' });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error retrieving doctors', error });
+    }
+}
+
+const forgotPasswordSendEmail = async(req : any, res: any) =>{
+    const {email, to, subject, text, html} = req.body;
+    try {
+        const result = await UserService.sendEmailForgotPassword(email, to, subject, text, html);
+        if(!result?.message){
+            res.status(200).json({succes: true, message: 'Email sent successfully' });
+        }else{
+            res.status(404).json({success: false, message: 'Email not found' });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error sending email', error });
+    }
+}
+
+const patients = async(req : any, res: any) =>{
+    try {
+        const patients = await UserService.getAllPatients();
+        if(patients.length > 0){
+            res.status(200).json(patients);
+        }else{
+            res.status(404).json({ message: 'No patients found' });
+        }
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error retrieving patients', error });
+    }
+}
+
+const addMedicalprofile = async (req: any, res: any) => {
+    const { userId, medicalHistory, allergies} = req.body;
+
+    try {
+        
+        const newProfile= await UserService.createMedicalProfile(userId, medicalHistory, allergies);
+        res.status(201).json({ message: 'Medical profile added successfully!', profile: newProfile });
+
+    } catch (error: any) {
+        console.error(error); 
+        res.status(500).json({ error: error.message || 'Medical Profile update failed.' });
+    }
+};
+
+const patientProfile = async(req : any, res: any) =>{
+    
+    const {userId} = req.body;
+    try {
+        const profile = await UserService.getPatientDetailsWithProfile(userId);
+        res.status(200).json(profile);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error retrieving users', error });
+    }
+}
+
+const doctorProfile = async(req : any, res: any) =>{
+    
+    const {user_id} = req.body;
+    try {
+        const profile = await UserService.getDoctorProfileById(user_id);
+        res.status(200).json(profile);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error retrieving doctor profile', error });
+    }
+}
+
+const changePassword = async (req: any, res: any) => {
+    const { user_id, currentPassword, newPassword } = req.body;
+
+    try {
+        const result = await UserService.changePassword(user_id, currentPassword, newPassword);
+        res.status(200).json(result);
+    } catch (error: any) {
+        console.error(error);
+        res.status(500).json({ error: error.message || 'Password change failed.' });
+    }
+};
+
+
 export default{
     register,
+    forgotPasswordSendEmail,
+    medicalProfileById,
+    addSpeciality,
+    changePassword,
     login,
-    users
+    patients,
+    specialities,
+    doctors,
+    usersNotActivated,
+    users,
+    addMedicalprofile,
+    patientProfile,
+    doctorProfile,
+    activateUser
 }
